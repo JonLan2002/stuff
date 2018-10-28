@@ -1,0 +1,5 @@
+token = 'BOT_TOKEN'
+owner = 'OWNER_ID'
+channel = 'VOICECHANNEL_ID'
+stream = 'STREAM_URL'
+playing = 'PLAYING_STATUS'
