@@ -1,7 +1,10 @@
 import discord
 import asyncio
 import logging
+import requests
+import sys
 
+sys.dont_write_bytecode = True
 logging.basicConfig(level=logging.INFO)
 client = discord.Client()
 
@@ -35,26 +38,41 @@ async def on_message(message):
 		elif message.content.startswith('%resume'):
 			voice.player.resume()
 			await client.send_message(message.channel, 'The player has been resumed.')
-		elif message.content.startswith('%channel'):
-			channel = client.get_channel(message.content[9:])
+		elif message.content.startswith('%stream '):
+			list = message.content.split()
+			try:
+				head = requests.head(list[1])
+				if head.status_code == 200:
+					voice.player.stop()
+					voice.player = voice.create_ffmpeg_player(list[1])
+					voice.player.start()
+					await client.send_message(message.channel, 'The stream has been changed.')
+				else:
+					await client.send_message(message.channel, 'The URL is invalid.')
+			except:
+				await client.send_message(message.channel, 'The URL is invalid.')
+		elif message.content.startswith('%channel '):
+			list = message.content.split()
+			channel = client.get_channel(list[1])
 			try:
 				await voice.move_to(channel)
 				await client.send_message(message.channel, 'The channel has been changed.')
 			except:
 				await client.send_message(message.channel, 'Must be a voice channel.')
-		elif message.content.startswith('%stream'):
-			stream = message.content[8:]
-			voice.player.stop()
-			voice.player = voice.create_ffmpeg_player(stream)
-			voice.player.start()
-			await client.send_message(message.channel, 'The stream has been changed.')
-		elif message.content.startswith('%playing'):
+		elif message.content.startswith('%playing '):
 			playing = message.content[9:]
 			await client.change_presence(game=discord.Game(name=playing, type=0))
+			await client.send_message(message.channel, 'The playing status has been changed.')
+		elif message.content == '%playing':
+			await client.change_presence(game=None)
 			await client.send_message(message.channel, 'The playing status has been changed.')
 		elif message.content.startswith('%logout'):
 			await client.send_message(message.channel, '(╯°□°）╯︵ ┻━┻')
 			await client.logout()
+	if message.channel.is_private:
+		if message.author != client.user:
+			if message.author.id != config.owner:
+				await client.send_message(discord.User(id=config.owner), 'DM from `{0.author}`:\n{0.content}'.format(message))
 
 @client.event
 async def on_voice_state_update(before, after):
@@ -64,12 +82,12 @@ async def on_voice_state_update(before, after):
 			voice = client.voice_client_in(channel.server)
 			try:
 				if before.voice.voice_channel.id == voice.channel.id:
-					await client.send_message(discord.User(id=config.owner), '`{0}` left'.format(after))
+					await client.send_message(discord.User(id=config.owner), '`{0}` left the voice channel...'.format(after))
 			except:
 				pass
 			try:
 				if after.voice.voice_channel.id == voice.channel.id:
-					await client.send_message(discord.User(id=config.owner), '`{0}` joined'.format(after))
+					await client.send_message(discord.User(id=config.owner), '`{0}` joined the voice channel!'.format(after))
 			except:
 				pass
 
