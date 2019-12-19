@@ -72,7 +72,7 @@ def neax(input_json):
             return True, json.dumps(output_data)
     return False, json.dumps(error)
 
-def aiohttp(argv=None): # pylint: disable=unused-argument
+def aiohttp(argv=None):
     from aiohttp import web
     argv = argv or []
     async def aiohttp_hello(request): # pylint: disable=unused-argument
