@@ -93,6 +93,7 @@ def aiohttp(argv=None): # pylint: disable=unused-argument
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         if sys.argv[1] == 'stdin':
+            # pylint: disable=invalid-name
             input_bytes = sys.stdin.buffer.read()
             input_string = input_bytes.decode()
             output_string = neax(input_string)[1]
