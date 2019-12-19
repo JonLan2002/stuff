@@ -7,16 +7,12 @@ import sys
 import csv
 
 if __name__ == '__main__':
-    #try:
     input_time = sys.argv[2]
     input_value = sys.argv[3]
     output_time_now = input_time.strip() + ' (Now)'
     output_value_now = input_value.strip() + ' (Now)'
     output_time_previous = input_time.strip() + ' (Previous)'
     output_value_previous = input_value.strip() + ' (Previous)'
-    #except IndexError:
-        #input_time = 'Time Weight (AV)           '
-        #input_value = 'Weight (AV)           '
     with open(sys.argv[1], newline='') as input_file:
         data = list(csv.DictReader(input_file))
     with open(sys.argv[1].rstrip('.csv') + '.output.csv', 'w', newline='') as output_file:
