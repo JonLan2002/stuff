@@ -108,7 +108,7 @@ if __name__ == '__main__':
         print(f'Usage: ./{__file__} [data]')
         print(f'       ./{__file__} [interface]')
         print()
-        print('[interface] can be stdin or api.')
+        print('[interface] can be stdin or aiohttp.')
         print()
         print('Example:')
         print(f'./{__file__} ', """'{"machines": [15, 10], "C": 12, "P":5}'""")
